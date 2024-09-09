@@ -134,8 +134,8 @@ public class DateDiffProcessorTests extends AbstractSqlWireSerializingTestCase<D
 
         assertEquals(7, new DateDiff(Source.EMPTY, l("quarter"), dt1, dt2, UTC).makePipe().asProcessor().process(null));
         assertEquals(-7, new DateDiff(Source.EMPTY, l("qq"), dt2, dt1, UTC).makePipe().asProcessor().process(null));
-        assertEquals(8, new DateDiff(Source.EMPTY, l("quarter"), dt1, dt2, zoneId).makePipe().asProcessor().process(null));
-        assertEquals(-8, new DateDiff(Source.EMPTY, l("qq"), dt2, dt1, zoneId).makePipe().asProcessor().process(null));
+        assertEquals(7, new DateDiff(Source.EMPTY, l("quarter"), dt1, dt2, zoneId).makePipe().asProcessor().process(null));
+        assertEquals(-7, new DateDiff(Source.EMPTY, l("qq"), dt2, dt1, zoneId).makePipe().asProcessor().process(null));
 
         assertEquals(23, new DateDiff(Source.EMPTY, l("month"), dt1, dt2, UTC).makePipe().asProcessor().process(null));
         assertEquals(-23, new DateDiff(Source.EMPTY, l("months"), dt2, dt1, UTC).makePipe().asProcessor().process(null));
@@ -207,14 +207,21 @@ public class DateDiffProcessorTests extends AbstractSqlWireSerializingTestCase<D
 
         Literal dt1 = l(dateTime(2010, 12, 31, 18, 0, 0, 0));
         Literal dt2 = l(dateTime(2019, 1, 1, 18, 0, 0, 0));
+        Literal dt3 = l(dateTime(2018, 1, 1, 18, 0, 0, 0));
+        Literal dt4 = l(dateTime(2018, 2, 1, 18, 0, 0, 0));
 
-        assertEquals(9, new DateDiff(Source.EMPTY, l("years"), dt1, dt2, UTC).makePipe().asProcessor().process(null));
-        assertEquals(-9, new DateDiff(Source.EMPTY, l("year"), dt2, dt1, UTC).makePipe().asProcessor().process(null));
+        assertEquals(8, new DateDiff(Source.EMPTY, l("years"), dt1, dt2, UTC).makePipe().asProcessor().process(null));
+        assertEquals(-8, new DateDiff(Source.EMPTY, l("year"), dt2, dt1, UTC).makePipe().asProcessor().process(null));
         assertEquals(8, new DateDiff(Source.EMPTY, l("yyyy"), dt1, dt2, zoneId).makePipe().asProcessor().process(null));
         assertEquals(-8, new DateDiff(Source.EMPTY, l("yy"), dt2, dt1, zoneId).makePipe().asProcessor().process(null));
 
-        assertEquals(33, new DateDiff(Source.EMPTY, l("quarter"), dt1, dt2, UTC).makePipe().asProcessor().process(null));
-        assertEquals(-33, new DateDiff(Source.EMPTY, l("qq"), dt2, dt1, UTC).makePipe().asProcessor().process(null));
+        assertEquals(-1, new DateDiff(Source.EMPTY, l("yyyy"), dt2, dt3, UTC).makePipe().asProcessor().process(null));
+        assertEquals(1, new DateDiff(Source.EMPTY, l("yy"), dt3, dt2, UTC).makePipe().asProcessor().process(null));
+        assertEquals(0, new DateDiff(Source.EMPTY, l("yyyy"), dt2, dt4, UTC).makePipe().asProcessor().process(null));
+        assertEquals(0, new DateDiff(Source.EMPTY, l("yy"), dt4, dt2, UTC).makePipe().asProcessor().process(null));
+
+        assertEquals(32, new DateDiff(Source.EMPTY, l("quarter"), dt1, dt2, UTC).makePipe().asProcessor().process(null));
+        assertEquals(-32, new DateDiff(Source.EMPTY, l("qq"), dt2, dt1, UTC).makePipe().asProcessor().process(null));
         assertEquals(32, new DateDiff(Source.EMPTY, l("quarter"), dt1, dt2, zoneId).makePipe().asProcessor().process(null));
         assertEquals(-32, new DateDiff(Source.EMPTY, l("qq"), dt2, dt1, zoneId).makePipe().asProcessor().process(null));
 

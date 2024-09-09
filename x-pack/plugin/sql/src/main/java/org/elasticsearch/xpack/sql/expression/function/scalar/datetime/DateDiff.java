@@ -19,6 +19,7 @@ import org.elasticsearch.xpack.ql.type.DataTypes;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,9 +38,19 @@ public class DateDiff extends ThreeArgsDateTimeFunction {
 
     public enum Part implements DateTimeField {
 
-        YEAR((start, end) -> end.getYear() - start.getYear(), "years", "yyyy", "yy"),
+        YEAR(
+            (start, end) -> safeInt(
+                ChronoUnit.YEARS.between(
+                    start.truncatedTo(ChronoUnit.DAYS),
+                    end.truncatedTo(ChronoUnit.DAYS)
+                )
+            ),
+            "years",
+            "yyyy",
+            "yy"
+        ),
         QUARTER(
-            (start, end) -> QuarterProcessor.quarter(end) - QuarterProcessor.quarter(start) + (YEAR.diff(start, end) * 4),
+            (start, end) -> safeInt(ChronoUnit.MONTHS.between(start, end) / 3),
             "quarters",
             "qq",
             "q"
